@@ -6,13 +6,29 @@ public class Main {
     //ghi file
     public static void writeToFile(String path, List<Student> students) {
         File file = null;
+        FileOutputStream fos = null;
+        ObjectOutputStream oos = null;
         try {
-            file=new File(path);
-            FileOutputStream fos = new FileOutputStream(file);
-            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            file = new File(path);
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            fos = new FileOutputStream(file);
+            oos = new ObjectOutputStream(fos);
             oos.writeObject(students);
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (fos != null) {
+                    fos.close();
+                }
+                if (oos != null) {
+                    oos.close();
+                }
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
         }
     }
 
@@ -31,22 +47,32 @@ public class Main {
         }
     }
 
+    // đọc file
     public static List<Student> readDataFromFile(String path) {
-        List<Student> students=null;
-        FileInputStream fis=null;
-        ObjectInputStream ois=null;
-        File file=null;
+        List<Student> students = null;
+        FileInputStream fis = null;
+        ObjectInputStream ois = null;
+        File file = null;
         try {
-            file=new File(path);
+            file = new File(path);
             if (file.exists()) {
                 fis = new FileInputStream(file);
                 ois = new ObjectInputStream(fis);
                 students = (List<Student>) ois.readObject();
             }
-        }
-
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (fis != null) {
+                    fis.close();
+                }
+                if (ois != null) {
+                    ois.close();
+                }
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
         }
         return students;
     }
